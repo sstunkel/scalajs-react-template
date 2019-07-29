@@ -24,49 +24,69 @@ enablePlugins(ScalaJSPlugin)
 (scalaJSUseMainModuleInitializer in Compile) := true
 
 // creates single js resource file for easy integration in html page
-skip in packageJSDependencies := false
+//skip in packageJSDependencies := false
 
 // copy  javascript files to js folder,that are generated using fastOptJS/fullOptJS
-crossTarget in (Compile, fullOptJS) := file("js")
-crossTarget in (Compile, fastOptJS) := file("js")
-crossTarget in (Compile, packageJSDependencies) := file("js")
-crossTarget in (Compile, packageMinifiedJSDependencies) := file("js")
-artifactPath in (Compile, fastOptJS) := ((crossTarget in (Compile, fastOptJS)).value /
-  ((moduleName in fastOptJS).value + "-opt.js"))
+//crossTarget in (Compile, fullOptJS) := file("js")
+//crossTarget in (Compile, fastOptJS) := file("js")
+//crossTarget in (Compile, packageJSDependencies) := file("js")
+//crossTarget in (Compile, packageMinifiedJSDependencies) := file("js")
+//artifactPath in (Compile, fastOptJS) := ((crossTarget in (Compile, fastOptJS)).value /
+//  ((moduleName in fastOptJS).value + "-opt.js"))
 scalacOptions += "-feature"
 
 
-enablePlugins(JSDependenciesPlugin)
-jsDependencies ++= Seq(
-  "org.webjars.npm" % "react" % v.reactJS
-    /        "umd/react.development.js"
-    minified "umd/react.production.min.js"
-    commonJSName "React",
-  "org.webjars.npm" % "react-dom" % v.reactJS
-    /         "umd/react-dom.development.js"
-    minified  "umd/react-dom.production.min.js"
-    dependsOn "umd/react.development.js"
-    commonJSName "ReactDOM",
-  "org.webjars.npm" % "react-dom" % v.reactJS
-    /         "umd/react-dom-server.browser.development.js"
-    minified  "umd/react-dom-server.browser.production.min.js"
-    dependsOn "umd/react-dom.development.js"
-    commonJSName "ReactDOMServer"
-)
-
-//enablePlugins(ScalaJSBundlerPlugin)
-//npmDependencies in Compile ++= Seq(
+//enablePlugins(JSDependenciesPlugin)
+//jsDependencies ++= Seq(
+//  "org.webjars.npm" % "react" % v.reactJS
+//    /        "umd/react.development.js"
+//    minified "umd/react.production.min.js"
+//    commonJSName "React",
+//  "org.webjars.npm" % "react-dom" % v.reactJS
+//    /         "umd/react-dom.development.js"
+//    minified  "umd/react-dom.production.min.js"
+//    dependsOn "umd/react.development.js"
+//    commonJSName "ReactDOM",
+//  "org.webjars.npm" % "react-dom" % v.reactJS
+//    /         "umd/react-dom-server.browser.development.js"
+//    minified  "umd/react-dom-server.browser.production.min.js"
+//    dependsOn "umd/react-dom.development.js"
+//    commonJSName "ReactDOMServer"
 //)
 
-// fixes unresolved deps issue: https://github.com/webjars/webjars/issues/1789
-dependencyOverrides ++= Seq(
-  "org.webjars.npm" % "js-tokens" % "4.0.0",
-  "org.webjars.npm" % "scheduler" % "0.14.0"
+enablePlugins(ScalaJSBundlerPlugin)
+npmDependencies in Compile ++= Seq(
+  "devextreme" -> "19.1",
+  "devextreme-react" -> "19.1",
+  "react" -> v.reactJS,
+  "react-dom" -> v.reactJS
 )
 
+npmDevDependencies in Compile ++= Seq (
+  "css-loader" -> "3.1.0",
+  "style-loader" -> "0.23.1",
+  "file-loader" -> "4.1.0"
+)
 
-//enablePlugins(WorkbenchPlugin)
+version in webpack := "4.38.0"
+
+version in startWebpackDevServer := "3.7.2"
+
+webpackBundlingMode := BundlingMode.LibraryOnly()
+
+webpackConfigFile := Some(baseDirectory.value / "custom.webpack.config.js")
+
+useYarn := true
+
+// fixes unresolved deps issue: https://github.com/webjars/webjars/issues/1789
+//dependencyOverrides ++= Seq(
+//  "org.webjars.npm" % "js-tokens" % "4.0.0",
+//  "org.webjars.npm" % "scheduler" % "0.14.0"
+//)
+//
+
+enablePlugins(WorkbenchPlugin)
 // Live Reloading: WorkbenchPlugin must NOT be enabled at the same time
-enablePlugins(WorkbenchSplicePlugin)
-workbenchCompression := true
-workbenchStartMode := WorkbenchStartModes.OnCompile
+//enablePlugins(WorkbenchSplicePlugin)
+//workbenchCompression := true
+//workbenchStartMode := WorkbenchStartModes.OnCompile
